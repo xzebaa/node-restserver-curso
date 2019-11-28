@@ -18,11 +18,15 @@ const startServer = () => {
     console.log(`server start port : ${ process.env.PORT }`);
 }
 
-mongoose.connect("mongodb+srv://sealvarezlazo:Xebitay1@cluster0-klwbk.mongodb.net/cafe?retryWrites=true&w=majority", (err, resp) => {
-  if (err) throw err;
-  
-  console.log('base de datos online ');
-});
+
+const conf = { useNewUrlParser: true ,useUnifiedTopology: true, useCreateIndex: true };
+mongoose.connect(process.env.URLDB,
+        conf,
+       (err, resp) => {
+        if (err) throw err;
+        
+        console.log('base de datos online ');
+      });
 
 // const {MongoClient} = require('mongodb');
 // const uri = "mongodb+srv://sealvarezlazo:Xebitay1@cluster0-klwbk.mongodb.net/cafe?retryWrites=true&w=majority";
