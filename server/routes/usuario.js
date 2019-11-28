@@ -78,7 +78,8 @@ app.get('/usuario', function(req, res) {
   });
   
   app.delete('/usario', function(req, res) {
-    res.json('hello world');
+    // este metodo solo cambiara el estado al registro a desactivado.
+    res.json('DELETE ELEMENT');
   });
 
   module.exports = app;
