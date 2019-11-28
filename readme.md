@@ -1,6 +1,6 @@
-# api rest node express
+# API REST NODE EXAMPLE
 - open in port 3000
--mongoose + express 
+- mongoose + express 
 
 ```
 npm install
