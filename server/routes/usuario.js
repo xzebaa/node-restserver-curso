@@ -12,19 +12,31 @@ app.get('/usuario', function(req, res) {
   desde = Number(desde);
   limite = Number(limite);
 
-  Usuario.find()
+  const find = {estado: true};
+
+  Usuario.find(find, 'nombre email imagen estado role google')
     .skip(desde)
     .limit(limite)
-    .exec( (err,usuario) => {
-      if (err) {
+    .exec( (error,usuario) => {
+    if (error) {
         res.status(400)
         return res.json(
-          {ok: false,
-          err,}
+        {ok: false,
+        error,}
         )
-      }
-      
-     return res.json({usuario});
+    }
+
+    Usuario.count(find, (error, conteo) => {
+        return res.json({
+            ok: true, 
+            usuario,
+            conteo,
+        });
+    })
+
+
+
+    
     })
   });
   
@@ -38,12 +50,12 @@ app.get('/usuario', function(req, res) {
       role: body.role,
     });
 
-    usuario.save ( (err, usuarioDB) => {
-      if (err){
+    usuario.save ( (error, usuarioDB) => {
+      if (error){
         res.status(400);
         return res.json({
           ok: false,
-          err, 
+          error, 
         })
       }
 
@@ -61,12 +73,13 @@ app.get('/usuario', function(req, res) {
 
     let body = _.pick(req.body, ['nombre', 'email', 'img', 'role', 'estado']);
 
-    Usuario.findByIdAndUpdate(id, body,{ new: true, runValidators: true },  (err, usuarioDB) => {
-      if (err){
+    const optionsUpdate = { new: true, runValidators: true};
+    Usuario.findByIdAndUpdate(id, body, optionsUpdate,  (error, usuarioDB) => {
+      if (error){
         res.status(400);
         return res.json({
           ok: false,
-          err, 
+          error, 
         })
       }
 
@@ -76,10 +89,56 @@ app.get('/usuario', function(req, res) {
       })
     });  
   });
+
+  app.delete('/usuario/:id', (req,res) => {
+
+      const { id } = req.params;
+      const bodyUpdate = { estado: false };
+      const optionsUpdate = { new: true, runValidators: true};
+      Usuario.findByIdAndUpdate(id, bodyUpdate, optionsUpdate, (error, usuarioDesactivado) => {
+          if (error){
+              res.status(400);
+              return res.json({
+                  ok: false,
+                  error,
+              })
+          }
+
+          return res.json({
+              ok: true,
+              usuario: usuarioDesactivado,
+          })
+      })
+  })
   
-  app.delete('/usario', function(req, res) {
-    // este metodo solo cambiara el estado al registro a desactivado.
-    res.json('DELETE ELEMENT');
+  app.delete('/delete/usuario/:id', function(req, res) {
+     const { id } = req.params;
+
+     Usuario.findByIdAndRemove(id, (error, usuarioBorrado) => {
+         if  (error){
+             res.status(400);
+             return res.json({
+                 ok: false,
+                 error,
+             })
+         }
+
+         if (!usuarioBorrado)
+         {
+            res.status(400);
+            return res.json({
+                ok: false,
+                error: {
+                    message: 'Usuario no encontrado',
+                },
+            })
+         }
+
+         return res.json({
+             ok: true,
+             usuario: usuarioBorrado
+            });
+     });
   });
 
   module.exports = app;
