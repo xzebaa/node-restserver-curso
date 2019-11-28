@@ -12,6 +12,7 @@ app.use(bodyParser.urlencoded({ extended: false }))
 app.use(bodyParser.json())
 
 app.use( require('./routes/usuario'));
+app.use( require('./routes/health'));
 
 const startServer = () => {
     console.log(`server start port : ${ process.env.PORT }`);
