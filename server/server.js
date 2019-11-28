@@ -1,6 +1,7 @@
 require('./config/config');
 
 const express = require('express');
+const mongoose = require('mongoose');
 const app = express();
 const bodyParser = require('body-parser');
 
@@ -10,41 +11,26 @@ app.use(bodyParser.urlencoded({ extended: false }))
 // parse application/json
 app.use(bodyParser.json())
 
-// respond with "hello world" when a GET request is made to the homepage
-app.get('/usuario', function(req, res) {
-  res.json('ge usuarios');
-});
-
-app.post('/usuario', function(req, res) {
-  const { body } = req;
-
-  let status = body.nombre ? 200:404;
-
-  if( !body.nombre )
-  {
-    res.status(400);
-    res.json({
-      ok: false,
-      mensaje: 'el nombre es necesario',
-    })
-
-  }
-  res.status
-  res.json({person:body});
-});
-
-app.put('/usuario/:id', function(req, res) {
-  
-  let { id } = req.params;
-  res.json({id});
-});
-
-app.delete('/usario', function(req, res) {
-  res.json('hello world');
-});
+app.use( require('./routes/usuario'));
 
 const startServer = () => {
     console.log(`server start port : ${ process.env.PORT }`);
 }
+
+mongoose.connect("mongodb+srv://sealvarezlazo:Xebitay1@cluster0-klwbk.mongodb.net/cafe?retryWrites=true&w=majority", (err, resp) => {
+  if (err) throw err;
+  
+  console.log('base de datos online ');
+});
+
+// const {MongoClient} = require('mongodb');
+// const uri = "mongodb+srv://sealvarezlazo:Xebitay1@cluster0-klwbk.mongodb.net/cafe?retryWrites=true&w=majority";
+// const client = new MongoClient(uri, { useNewUrlParser: true ,useUnifiedTopology: true });
+// client.connect(err => {
+//   // const collection = client.db("test").collection("devices");
+//   // perform actions on the collection object
+//   console.log('conected');
+//   client.close();
+// });
 
 app.listen(process.env.PORT, startServer);
