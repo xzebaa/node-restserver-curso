@@ -25,7 +25,6 @@ let verificaToken = (req, res, next) => {
 //=================
 // VERIFICAR ADMIN-ROLE 
 //=================
-
 const verificaAdminRole = (req, res, next) => {
     const { usuario } = req;
 
