@@ -17,7 +17,7 @@ app.get('/usuario', verificaToken, function(req, res) {
 
   const find = {estado: true};
 
-  Usuario.find(find, 'nombre email imagen estado role google')
+  Usuario.find(find, 'nombre img imagen estado role google')
     .skip(desde)
     .limit(limite)
     .exec( (error,usuario) => {

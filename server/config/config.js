@@ -18,3 +18,6 @@ process.env.CADUCIDAD_TOKEN = 60 * 60 * 24 * 30;
 // seed token jwt
 process.env.SEED = process.env.SEED || 'jwt-seed-dev';
 
+// CLIENT ID GOOGLE
+process.env.CLIENT_ID_GOOGLE = process.env.CLIENT_ID_GOOGLE || '12886019346-lu2l5lbq77glb74j5st8cullcvm1daj4.apps.googleusercontent.com';
+
