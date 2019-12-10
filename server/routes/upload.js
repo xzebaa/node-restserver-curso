@@ -62,7 +62,7 @@ app.put('/upload/:tipo/:id', (req, res) => {
     const nombreArchivo = `${id}-${new Date().getMilliseconds() }.${extension}`
       
       archivo.mv(`uploads/${tipo}/${nombreArchivo}`, (error) => {
-        if (err)
+        if (error)
           return res.status(500).json({
             ok:false, 
             error
