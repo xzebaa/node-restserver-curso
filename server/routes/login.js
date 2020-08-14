@@ -3,24 +3,19 @@ const app = express();
 const Usuario = require('../models/usuario');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
+const { login } = require('../data/db');
 
 const {OAuth2Client} = require('google-auth-library');
 const client = new OAuth2Client(process.env.CLIENT_ID_GOOGLE);
 
-app.post('/login', (req, resp) => {
+app.post('/login',  async  (req, resp) => {
 
     const { body = [] } = req;
-    Usuario.findOne( {email: body.email}, (error, usuarioDB) => {
 
-        if(error){
-            resp.status(500);
-            return resp.json({
-                ok: false,
-                error,
-            })
-        }
-
-        if ( !usuarioDB )
+    try {
+        const usuarioDB = await login();
+        
+        if ( !usuarioDB.length )
         {
             resp.status(400);
             return resp.json({
@@ -31,18 +26,30 @@ app.post('/login', (req, resp) => {
             })
         }
 
+        console.log(usuarioDB[0]);
 
-        const { password: passwordDB = '' } = usuarioDB;
+        const { password: passwordDB = '' } = usuarioDB[0];
         const { password: passwordRequest = '' } = body;
-        if ( !bcrypt.compareSync( passwordRequest, passwordDB) ){
-            resp.status(400);
-            return resp.json({
-                ok: false,
-                error: {
-                    mmessage: 'Usuario o (contraseña) incorrecta.'
-                },
-            })
-        }
+
+        // if( passwordDB != passwordRequest)
+        // {
+        //     resp.status(400);
+        //     return resp.json({
+        //         ok: false,
+        //         error: {
+        //             mmessage: 'Usuario o (contraseña) incorrecta.'
+        //         },
+        //     });
+        // }
+        // if ( !bcrypt.compareSync( passwordRequest, passwordDB) ){
+        //     resp.status(400);
+        //     return resp.json({
+        //         ok: false,
+        //         error: {
+        //             mmessage: 'Usuario o (contraseña) incorrecta.'
+        //         },
+        //     })
+        // }
 
         const token = jwt.sign(
             { usuarioDB },
@@ -54,10 +61,50 @@ app.post('/login', (req, resp) => {
 
         return resp.json({
             ok: true,
-            usuario: usuarioDB,
+            usuario: usuarioDB[0],
             token,
         })
-    });
+
+
+    } catch (error) {
+        resp.status(500);
+        return resp.json({
+            ok: false,
+            error,
+        })
+    }
+
+    // const { body = [] } = req;
+    // Usuario.findOne( {email: body.dn}, (error, usuarioDB) => {
+
+
+
+    //     const { password: passwordDB = '' } = usuarioDB;
+    //     const { password: passwordRequest = '' } = body;
+    //     if ( !bcrypt.compareSync( passwordRequest, passwordDB) ){
+    //         resp.status(400);
+    //         return resp.json({
+    //             ok: false,
+    //             error: {
+    //                 mmessage: 'Usuario o (contraseña) incorrecta.'
+    //             },
+    //         })
+    //     }
+
+    //     const token = jwt.sign(
+    //         { usuarioDB },
+    //         process.env.SEED,
+    //         {
+    //             expiresIn: process.env.CADUCIDAD_TOKEN,
+    //         }
+    //     );
+
+    //     return resp.json({
+    //         ok: true,
+    //         usuario: usuarioDB,
+    //         token,
+    //     })
+    // });
 });
 
 // CONFIGURACIONES DE GOOGLE

@@ -3,9 +3,17 @@ require('./config/config');
 const express = require('express');
 const mongoose = require('mongoose');
 const app = express();
+const cors = require('cors');
 const bodyParser = require('body-parser');
 const path = require('path');
 
+app.use(cors());
+
+app.use(function(req, res, next) {
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+  next();
+});
 // parse application/x-www-form-urlencoded
 app.use(bodyParser.urlencoded({ extended: false }))
  
@@ -23,22 +31,12 @@ const startServer = () => {
 
 
 const conf = { useNewUrlParser: true ,useUnifiedTopology: true, useCreateIndex: true };
-mongoose.connect(process.env.URLDB,
-        conf,
-       (err, resp) => {
-        if (err) throw err;
+// mongoose.connect(process.env.URLDB,
+//         conf,
+//        (err, resp) => {
+//         if (err) throw err;
         
-        console.log('base de datos online ');
-      });
-
-// const {MongoClient} = require('mongodb');
-// const uri = "mongodb+srv://sealvarezlazo:Xebitay1@cluster0-klwbk.mongodb.net/cafe?retryWrites=true&w=majority";
-// const client = new MongoClient(uri, { useNewUrlParser: true ,useUnifiedTopology: true });
-// client.connect(err => {
-//   // const collection = client.db("test").collection("devices");
-//   // perform actions on the collection object
-//   console.log('conected');
-//   client.close();
-// });
+//         console.log('base de datos online ');
+//       });
 
 app.listen(process.env.PORT, startServer);

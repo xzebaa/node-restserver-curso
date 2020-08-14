@@ -1,7 +1,8 @@
 const express = require('express');
 const app = express();
+const { login } = require('../data/db');
 
-app.get('/health', (req, resp) => {
+app.get('/health', async (req, resp) => {
     const info = {
         'node-version': process.version,
         memory: process.memoryUsage(),
