@@ -1,6 +1,7 @@
 const express = require('express');
 const app = express();
 const { login } = require('../data/db');
+const multer = require('multer');
 
 app.get('/health', async (req, resp) => {
     const info = {
@@ -17,6 +18,14 @@ app.get('/health', async (req, resp) => {
     return resp.json({
         ok: true,
         info,
+    })
+})
+
+app.post('/testUpload', async (req, resp) => {
+    console.log(req.file)
+
+    return resp.json({
+        ok: true
     })
 })
 module.exports = app;

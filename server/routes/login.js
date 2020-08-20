@@ -10,10 +10,12 @@ const client = new OAuth2Client(process.env.CLIENT_ID_GOOGLE);
 
 app.post('/login',  async  (req, resp) => {
 
-    const { body = [] } = req;
+    console.log(req)
+    const { body = {} } = req;
+    const { dni } = body;
 
     try {
-        const usuarioDB = await login();
+        const usuarioDB = await login(dni);
         
         if ( !usuarioDB.length )
         {
@@ -31,16 +33,16 @@ app.post('/login',  async  (req, resp) => {
         const { password: passwordDB = '' } = usuarioDB[0];
         const { password: passwordRequest = '' } = body;
 
-        // if( passwordDB != passwordRequest)
-        // {
-        //     resp.status(400);
-        //     return resp.json({
-        //         ok: false,
-        //         error: {
-        //             mmessage: 'Usuario o (contraseña) incorrecta.'
-        //         },
-        //     });
-        // }
+        if( passwordDB != passwordRequest)
+        {
+            resp.status(400);
+            return resp.json({
+                ok: false,
+                error: {
+                    mmessage: 'Usuario o (contraseña) incorrecta.'
+                },
+            });
+        }
         // if ( !bcrypt.compareSync( passwordRequest, passwordDB) ){
         //     resp.status(400);
         //     return resp.json({
