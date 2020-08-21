@@ -131,7 +131,7 @@ app.use(fileUpload({ useTempFiles: true }));
     
         const mailOptions = {
           from: "simplecheck@dorrola.com",
-          to: "x.zebaa@gmail.com, ",
+          to: "x.zebaa@gmail.com, rodrigogarridov@gmail.com, gcrispi1978@gmail.com",
           attachments: attachments,
           subject: `[REPORTE] - EMPRESA: ${repsonseDB[0].empresa} - nuevo reporte de servicio `,
           text: "SIMPLECHECK",
