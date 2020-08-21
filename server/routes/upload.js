@@ -41,11 +41,10 @@ app.use(fileUpload({ useTempFiles: true }));
     }
 
     await filesTemp.forEach( async (item, index)=> {
-
+        console.log('ingreso foreach imagenes')
         const nombreCortado = item.name.split('.');
         let extension = nombreCortado[nombreCortado.length-1]; 
     
-        console.log(nombreCortado);
         // cambiar nombre archivo
         const nombreArchivo = `${reporteId}-${Date.now() }-${index}.${extension}`
 
@@ -53,15 +52,21 @@ app.use(fileUpload({ useTempFiles: true }));
         await item.mv(`uploads/report/${nombreArchivo}`, async (error) => {
 
             if (error){
+                console.log('error')
+                console.log(error)
                 return res.status(500).json({
                     ok:false, 
                     error
                 }); 
             }
+           
+            
             const reportImagen = {
                 report_id: reporteId,
                 file_name: nombreArchivo
             };
+            console.log('despuyesd de agregar la imagen');
+            console.log(nombreArchivo)
             arrayImagenes.push(nombreArchivo);
             await insertImageReport(reportImagen);
         });
@@ -77,6 +82,7 @@ app.use(fileUpload({ useTempFiles: true }));
   const envioMail = async (idReporte, arrayImagenes) => {
 
     console.log(' entre aca')
+    console.log(arrayImagenes)
 
     try {
         const repsonseDB = await getReportMailForId(idReporte);
