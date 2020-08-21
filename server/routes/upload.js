@@ -69,6 +69,9 @@ app.use(fileUpload({ useTempFiles: true }));
             console.log(nombreArchivo)
             arrayImagenes.push(nombreArchivo);
             await insertImageReport(reportImagen);
+        }, (error) => {
+            console.log('error catch');
+            console.log(error)
         });
     });
     await envioMail(reporteId, arrayImagenes);
