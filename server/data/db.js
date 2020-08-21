@@ -137,7 +137,8 @@ const createReport = async (report = {}) => {
         last_update_date: new Date(),
         office_id: report.office,
         status_id: 1,
-        service_id: report.service
+        service_id: 100,
+        activities_services_id: report.service
     };
 
       connection.query('INSERT INTO REPORTS SET ?', post, (err, resp) => {
@@ -172,13 +173,16 @@ const insertImageServices = async (service = {}) => {
   });
 };
 
-const insertImageReport = async (service = {}) => {
+const insertImageReport = async (report = {}) => {
   return new Promise( (resolve,reject) => {
+
+    const { report_id, file_name} = report;
+
     var post = {
-      file_name: 'RRRRRRSWE.jpeg',
+      file_name,
       date: new Date(),
-      active: 1,
-      report_id: 1
+      active: 1, 
+      report_id
     };
 
     connection.query('INSERT INTO IMAGES_REPORTS SET ?', post, (err, resp) => {
@@ -191,6 +195,7 @@ const insertImageReport = async (service = {}) => {
     });
   });
 };
+
 
 const getActivitiServices = async () => {
   
@@ -282,6 +287,43 @@ const getOfficesByCompanyId = async ( companyId ) => {
   })
 };
 
+const getReportMailForId = async ( reportId ) => {
+  
+    return new Promise( (resolve,reject) => {
+        connection.query(`select RPRT.id ,
+        USR.name as nombre,
+        USR.dni as rut,
+        COMPNY.name as empresa,
+        OFFI.name as oficina,
+        ACTSERVICES.name as servicio_name,
+        RPRT.comentary as comentario,
+        RPRT.informant_extra_email as mail,
+        RPRT.informant_extra_number1 as numero
+        from REPORTS as RPRT
+        INNER JOIN OFFICES AS OFFI
+        ON RPRT.office_id = OFFI.id
+        INNER JOIN ACTIVITIES_SERVICES AS ACTSERVICES
+        ON RPRT.activities_services_id = ACTSERVICES.id
+        INNER JOIN USERS AS USR
+        ON RPRT.informant_dni = USR.dni
+        INNER JOIN COMPANYS AS COMPNY
+        ON OFFI.company_id = COMPNY.id
+        where RPRT.id=${reportId}`, (err, resp) => {
+            if (err) {
+                reject(err)
+            } else {
+                const table = [];
+                resp.forEach((product) => {
+                    
+                    table.push(product)
+                })
+                resolve(table)
+            }
+        })
+    })
+  };
+
+
 module.exports = { 
   login,
   getServices,
@@ -296,5 +338,6 @@ module.exports = {
   getCategoriesServices,
   getOffices,
   getOfficesByCompanyId,
-  getCompanys
+  getCompanys,
+  getReportMailForId
 };

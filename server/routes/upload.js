@@ -3,163 +3,19 @@ const fileUpload = require('express-fileupload');
 const fs = require('fs');
 const path = require('path');
 
-const Ususario = require('../models/usuario');
-const Producto = require('../models/producto');
+const nodemailer = require('nodemailer');
 
+
+const { 
+    insertImageReport,
+    getReportMailForId
+} = require('../data/db');
 
 const app = express();
 
 app.use(fileUpload({ useTempFiles: true }));
 
-// app.put('/upload/:tipo/:id', (req, res) => {
-
-//     const { tipo, id } = req.params;
-
-    
-    
-//     const tiposValidos = ['reporte', 'servicio'];
-    
-//     console.log(tiposValidos.indexOf( tipo ));
-
-//     if ( tiposValidos.indexOf( tipo ) < 0 ){
-//         return res.status(400).json({
-//             ok:false, 
-//             error: {
-//                 message:'tipo no valido'
-//             }
-//         });
-//       }
-
-//     if (!req.files || Object.keys(req.files).length === 0) {
-//         return res.status(400).json({
-//             ok:false, 
-//             error: {
-//                 message:'No files were uploaded.'
-//             }
-//         });
-//       }
-    
-//       // The name of the input field (i.e. "sampleFile") is used to retrieve the uploaded file
-//       let archivo = req.files.archivo;
-
-//       const nombreCortado = archivo.name.split('.');
-//       let extension = nombreCortado[nombreCortado.length-1]; 
-
-//       console.log(nombreCortado);
-//       let extensionesValidas = ['jpg', 'png', 'jpeg', 'img'];
-
-//       if (extensionesValidas.indexOf( extension ) < 0)
-//       {
-//           return res.status(400).json({
-//               ok: false,
-//               error: {
-//                   menssage: `la extension ${extension} no es valida`
-//               }
-//           })
-//       }
-      
-//     // cambiar nombre archivo
-//     const nombreArchivo = `${id}-${new Date().getMilliseconds() }.${extension}`
-      
-//       archivo.mv(`uploads/${tipo}/${nombreArchivo}`, (error) => {
-//         if (error)
-//           return res.status(500).json({
-//             ok:false, 
-//             error
-//         });
-
-//         if (tipo === 'productos') imagenProducto (id, nombreArchivo, res);
-//         if (tipo === 'usuarios') imagenUsuario  (id, nombreArchivo, res);
-       
-//     });
-// });
-
-// const imagenUsuario = async (id,   nombreArchivo, res) => {
-
-//     try {
-//         const usuarioDB = await Ususario.findById(id);
-
-//         if (!usuarioDB){
-//             borraArchivo(nombreArchivo, 'usuarios');
-//             res.status(500);
-//             return res.json({
-//                 ok: false,
-//                 error: {
-//                     message: 'Usuario no encontrado',
-//                 },
-//             })
-//         }
-
-//         // elimina imagen previa antes de cargar nueva imagen a modelo usuario
-//         borraArchivo(usuarioDB.img, 'usuarios');
-        
-//         usuarioDB.img = nombreArchivo;
-
-//         const usuarioGuardado = await usuarioDB.save();
-
-//         return res.json({
-//             ok: true,
-//             usuario: usuarioGuardado,
-//             img: nombreArchivo,
-//         })
-
-
-//     } catch (error) {
-
-//         borraArchivo(nombreArchivo, 'usuarios');
-//         return res.status(500).json({
-//             ok: false,
-//             error,
-//         });
-//     }
-
-// };
-
-// const imagenProducto = async(id, nombreArchivo, res) => {
-
-//     try {
-
-//         const productoDB = await Producto.findById(id);
-//         if (!productoDB){
-//             borraArchivo(nombreArchivo, 'productos');
-//             res.status(500);
-//             return res.json({
-//                 ok: false,
-//                 error: {
-//                     message: 'Usuario no encontrado',
-//                 },
-//             })
-//         }
-
-//         borraArchivo(productoDB.img, 'productos');
-//         productoDB.img = nombreArchivo;
-
-//         const productoActualizado = await productoDB.save();
-
-//         return res.json({
-//             ok: true,
-//             producto: productoActualizado,
-//             img: nombreArchivo,
-//         })
-        
-//     } catch (error) {
-//         borraArchivo(nombreArchivo, 'productos');
-//         return res.status(500).json({
-//             ok: false,
-//             error,
-//         });
-//     }
-
-// };
-
-//  const borraArchivo = ( nombreImagen, tipo ) => {
-//     let pathImage = path.resolve(__dirname, `../../uploads/${tipo}/${nombreImagen}`);
-//     if (fs.existsSync(pathImage)){
-//         fs.unlinkSync(pathImage);
-//     }
-//  }
-
- app.post('/upload2', function(req, res) {
+ app.post('/upload/report/:reporteId', async  (req, res) =>{
     if (!req.files || Object.keys(req.files).length === 0) {
         return res.status(400).json({
             ok:false, 
@@ -168,30 +24,49 @@ app.use(fileUpload({ useTempFiles: true }));
             }
         });
     }
-  
-    // cambiar nombre archivo
-    // const nombreArchivo = `${id}-${new Date().getMilliseconds() }.${extension}`
-    
+    let arrayImagenes = [];
+    const { reporteId } = req.params;
+    console.log(reporteId);
+
     let archivo = req.files.archivo;
     console.log(Array.isArray(archivo));
+    console.log(archivo);
 
     let filesTemp = [];
+
     if(Array.isArray(archivo)){
         filesTemp = archivo;
     } else {
         filesTemp.push(archivo);
     }
 
-    filesTemp.forEach(item => {
-        console.log(item.name);
-        item.mv(`uploads/${item.name}`, (error) => {
-            if (error)
-              return res.status(500).json({
-                ok:false, 
-                error
-            });       
+    filesTemp.forEach( (item, index)=> {
+
+        const nombreCortado = item.name.split('.');
+        let extension = nombreCortado[nombreCortado.length-1]; 
+    
+        console.log(nombreCortado);
+        // cambiar nombre archivo
+        const nombreArchivo = `${reporteId}-${Date.now() }-${index}.${extension}`
+
+        console.log(nombreArchivo);
+        item.mv(`uploads/report/${nombreArchivo}`, (error) => {
+
+            if (error){
+                return res.status(500).json({
+                    ok:false, 
+                    error
+                }); 
+            }
+            const reportImagen = {
+                report_id: reporteId,
+                file_name: nombreArchivo
+            };
+            arrayImagenes.push(nombreArchivo);
+            insertImageReport(reportImagen);
         });
     });
+    await envioMail(reporteId, arrayImagenes);
 
     return res.json({
         ok: true,
@@ -199,6 +74,66 @@ app.use(fileUpload({ useTempFiles: true }));
     })
   });
 
+  const envioMail = async (idReporte, arrayImagenes) => {
 
+    console.log(' entre aca')
+
+    try {
+        const repsonseDB = await getReportMailForId(idReporte);
+        console.log(repsonseDB[0].nombre);
+    
+        const transporter = nodemailer.createTransport({
+          service: "gmail",
+          auth: {
+            user: "sealvarezlazo@gmail.com",
+            pass: "Xebitay123" // naturally, replace both with your real credentials or an application-specific password
+          }
+        });
+        let attachments = [];
+
+        arrayImagenes.forEach( (nombreArchivo, index)=> {
+            attachments.push({
+                // filename and content type is derived from path
+                path: path.resolve(
+                  __dirname,
+                  `../../uploads/report/${nombreArchivo}`
+                )
+              })
+        });
+    
+        const mailOptions = {
+          from: "norespionse@prueba.com",
+          to: "x.zebaa@gmail.com, sebastian.alvarez@peanuthub.cl",
+          attachments: attachments,
+          subject: `[REPORTE] - EMPRESA: ${repsonseDB[0].empresa} - nuevo reporte de servicio `,
+          text: "SIMPLECHECK",
+          html: `
+            <p>ID REPORTE = ${repsonseDB[0].id}</p> </br>
+            <p>NOMBRE = ${repsonseDB[0].nombre}</p> </br>
+            <p>RUT = ${repsonseDB[0].rut}</p> </br>
+            <p>EMPRESA = ${repsonseDB[0].empresa}</p> </br>
+            <p>OFICINA = ${repsonseDB[0].oficina}</p> </br>
+            <p>SERVICIO PRESTADO = ${repsonseDB[0].servicio_name}</p> </br>
+            <p>COMENTARIO = ${repsonseDB[0].comentario}</p> </br>
+            <p>MAIL = ${repsonseDB[0].mail}</p> </br>
+            <p>NUMERO TELEFONO = ${repsonseDB[0].numero}</p> </br>
+            `
+        };
+    
+        transporter.sendMail(mailOptions, function(error, info) {
+          if (error) {
+            console.log(error);
+          } else {
+            console.log("Email sent: " + info.response);
+          }
+        });
+    
+        console.log('exito');
+        return true;
+      } catch (error) {
+          console.log(error);
+        return false;
+      }
+  }
 
 module.exports = app;

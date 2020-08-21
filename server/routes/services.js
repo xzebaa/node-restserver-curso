@@ -131,7 +131,7 @@ app.get('/service-company', async (req, res) => {
 // OBTENER OFICINAS POR ID DE COMPAÑIA
 //////////////////////
 app.get('/service-offices/company/:id', async (req, res) => {
-  console.log('offices reqiest')
+  console.log('offices request')
   try {
       const { id } = req.params;
       const responseDB = await getOfficesByCompanyId(id);
@@ -182,7 +182,7 @@ app.post('/service/report', async (req, res) => {
         
         return res.json({
             ok: true,
-            service: serviceDB,
+            report: serviceDB,
         });
   
     } catch (error) {
