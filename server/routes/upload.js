@@ -40,7 +40,7 @@ app.use(fileUpload({ useTempFiles: true }));
         filesTemp.push(archivo);
     }
 
-    filesTemp.forEach( (item, index)=> {
+    await filesTemp.forEach( async (item, index)=> {
 
         const nombreCortado = item.name.split('.');
         let extension = nombreCortado[nombreCortado.length-1]; 
@@ -50,7 +50,7 @@ app.use(fileUpload({ useTempFiles: true }));
         const nombreArchivo = `${reporteId}-${Date.now() }-${index}.${extension}`
 
         console.log(nombreArchivo);
-        item.mv(`uploads/report/${nombreArchivo}`, (error) => {
+        await item.mv(`uploads/report/${nombreArchivo}`, async (error) => {
 
             if (error){
                 return res.status(500).json({
@@ -63,7 +63,7 @@ app.use(fileUpload({ useTempFiles: true }));
                 file_name: nombreArchivo
             };
             arrayImagenes.push(nombreArchivo);
-            insertImageReport(reportImagen);
+            await insertImageReport(reportImagen);
         });
     });
     await envioMail(reporteId, arrayImagenes);
@@ -105,6 +105,8 @@ app.use(fileUpload({ useTempFiles: true }));
         let attachments = [];
 
         arrayImagenes.forEach( (nombreArchivo, index)=> {
+
+            console.log(`agregando imagenes al adjuntador ${nombreArchivo}`)
             attachments.push({
                 // filename and content type is derived from path
                 path: path.resolve(
@@ -113,10 +115,14 @@ app.use(fileUpload({ useTempFiles: true }));
                 )
               })
         });
+
+        console.log('array de imagenes');
+
+        console.log(arrayImagenes);
     
         const mailOptions = {
-          from: "norespionse@prueba.com",
-          to: "x.zebaa@gmail.com, rodrigogarridov@gmail.com, gcrispi1978@gmail.com, rodrigogarridov@gmail.com",
+          from: "simplecheck@dorrola.com",
+          to: "x.zebaa@gmail.com, ",
           attachments: attachments,
           subject: `[REPORTE] - EMPRESA: ${repsonseDB[0].empresa} - nuevo reporte de servicio `,
           text: "SIMPLECHECK",
