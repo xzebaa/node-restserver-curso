@@ -82,13 +82,26 @@ app.use(fileUpload({ useTempFiles: true }));
         const repsonseDB = await getReportMailForId(idReporte);
         console.log(repsonseDB[0].nombre);
     
-        const transporter = nodemailer.createTransport({
-          service: "gmail",
-          auth: {
-            user: "sealvarezlazo@gmail.com",
-            pass: "Xebitay123" // naturally, replace both with your real credentials or an application-specific password
-          }
-        });
+        // const transporter = nodemailer.createTransport({
+        //   service: "gmail",
+        //   auth: {
+        //     user: "sealvarezlazo@gmail.com",
+        //     pass: "Xebitay123" // naturally, replace both with your real credentials or an application-specific password
+        //   }
+        // });
+
+        const transporter =  nodemailer.createTransport({
+            host: "mail.dorrola.com",
+            port: 587,
+            auth: {
+              user: "simplecheck@dorrola.com",
+              pass: "Xebitay123"
+            },
+            tls: {
+                rejectUnauthorized: false
+            }
+          });
+
         let attachments = [];
 
         arrayImagenes.forEach( (nombreArchivo, index)=> {
@@ -103,7 +116,7 @@ app.use(fileUpload({ useTempFiles: true }));
     
         const mailOptions = {
           from: "norespionse@prueba.com",
-          to: "x.zebaa@gmail.com, sebastian.alvarez@peanuthub.cl",
+          to: "x.zebaa@gmail.com, rodrigogarridov@gmail.com, gcrispi1978@gmail.com, rodrigogarridov@gmail.com",
           attachments: attachments,
           subject: `[REPORTE] - EMPRESA: ${repsonseDB[0].empresa} - nuevo reporte de servicio `,
           text: "SIMPLECHECK",

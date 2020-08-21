@@ -24,77 +24,89 @@ app.get("/health", async (req, resp) => {
   });
 });
 
-// app.get("/testMail", async (req, resp) => {
-//   try {
-//     const repsonseDB = await getReportMailForId(100);
-//     console.log(repsonseDB[0].nombre);
+app.get("/testMail", async (req, resp) => {
+  try {
+    const repsonseDB = await getReportMailForId(100);
+    console.log(repsonseDB[0].nombre);
 
-//     const transporter = nodemailer.createTransport({
-//       service: "gmail",
-//       auth: {
-//         user: "sealvarezlazo@gmail.com",
-//         pass: "Xebitay123" // naturally, replace both with your real credentials or an application-specific password
-//       }
-//     });
+    const transporter =  nodemailer.createTransport({
+        host: "mail.dorrola.com",
+        port: 587,
+        auth: {
+          user: "simplecheck@dorrola.com",
+          pass: "Xebitay123"
+        },
+        tls: {
+            rejectUnauthorized: false
+        }
+      });
 
-//     const attachments = [
-//       {
-//         // filename and content type is derived from path
-//         path: path.resolve(
-//           __dirname,
-//           `../../uploads/report/54-1597949183892-0.png`
-//         )
-//       },
-//       {
-//         // filename and content type is derived from path
-//         path: path.resolve(
-//           __dirname,
-//           `../../uploads/report/54-1597949183897-1.jpg`
-//         )
-//       },
-//       {
-//         // filename and content type is derived from path
-//         path: path.resolve(
-//           __dirname,
-//           `../../uploads/report/54-1597949183897-2.png`
-//         )
-//       }
-//     ];
+    const attachments = [
+      {
+        // filename and content type is derived from path
+        path: path.resolve(
+          __dirname,
+          `../../uploads/report/111-1597977118849-0.jpg`
+        )
+      },
+      {
+        // filename and content type is derived from path
+        path: path.resolve(
+          __dirname,
+          `../../uploads/report/111-1597977118849-0.jpg`
+        )
+      },
+      {
+        // filename and content type is derived from path
+        path: path.resolve(
+          __dirname,
+          `../../uploads/report/111-1597977118849-0.jpg`
+        )
+      },
+      {
+        // filename and content type is derived from path
+        path: path.resolve(
+          __dirname,
+          `../../uploads/report/111-1597977118849-0.jpg`
+        )
+      }
+    ];
 
-//     const mailOptions = {
-//       from: "norespionse@prueba.com",
-//       to: "x.zebaa@gmail.com, sebastian.alvarez@peanuthub.cl",
-//       attachments: attachments,
-//       subject: "[REPORTE]",
-//       text: "hello world",
-//       html: `
-//         <p>ID REPORTE = ${repsonseDB[0].id}</p> </br>
-//         <p>NOMBRE = ${repsonseDB[0].nombre}</p> </br>
-//         <p>RUT = ${repsonseDB[0].rut}</p> </br>
-//         <p>EMPRESA = ${repsonseDB[0].empresa}</p> </br>
-//         <p>OFICINA = ${repsonseDB[0].oficina}</p> </br>
-//         <p>SERVICIO PRESTADO = ${repsonseDB[0].servicio_name}</p> </br>
-//         <p>COMENTARIO = ${repsonseDB[0].comentario}</p> </br>
-//         <p>MAIL = ${repsonseDB[0].mail}</p> </br>
-//         <p>NUMERO TELEFONO = ${repsonseDB[0].numero}</p> </br>
-//         `
-//     };
+    const mailOptions = {
+      from: "simplecheck@dorrola.com",
+      to: "x.zebaa@gmail.com",
+      attachments: attachments,
+      subject: "[REPORTE]",
+      text: "hello world",
+      html: `
+        <p>ID REPORTE = ${repsonseDB[0].id}</p> </br>
+        <p>NOMBRE = ${repsonseDB[0].nombre}</p> </br>
+        <p>RUT = ${repsonseDB[0].rut}</p> </br>
+        <p>EMPRESA = ${repsonseDB[0].empresa}</p> </br>
+        <p>OFICINA = ${repsonseDB[0].oficina}</p> </br>
+        <p>SERVICIO PRESTADO = ${repsonseDB[0].servicio_name}</p> </br>
+        <p>COMENTARIO = ${repsonseDB[0].comentario}</p> </br>
+        <p>MAIL = ${repsonseDB[0].mail}</p> </br>
+        <p>NUMERO TELEFONO = ${repsonseDB[0].numero}</p> </br>
+        `
+    };
+    console.log('intentando enviar mail');
+    transporter.sendMail(mailOptions, function(error, info) {
+      if (error) {
+        console.log(error);
+      } else {
+        console.log("Email sent: " + info.response);
+      }
+    });
 
-//     transporter.sendMail(mailOptions, function(error, info) {
-//       if (error) {
-//         console.log(error);
-//       } else {
-//         console.log("Email sent: " + info.response);
-//       }
-//     });
-
-//     return resp.json({
-//       ok: true
-//     });
-//   } catch (error) {
-//     return resp.json({
-//       ok: false
-//     });
-//   }
-// });
+    return resp.json({
+      ok: true
+    });
+  } catch (error) {
+      console.log(error)
+    return resp.json({
+      ok: false
+    });
+  }
+});
 module.exports = app;
