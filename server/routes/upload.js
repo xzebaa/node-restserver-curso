@@ -13,7 +13,10 @@ const {
 
 const app = express();
 
-app.use(fileUpload({ useTempFiles: true }));
+app.use(fileUpload({ limits: {
+  fileSize: 1024 * 1024 * 1024 * 1024,
+  abortOnLimit: false
+} }));
 
  app.post('/upload/report/:reporteId', async  (req, res) =>{
     if (!req.files || Object.keys(req.files).length === 0) {
