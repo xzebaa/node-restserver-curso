@@ -134,7 +134,7 @@ app.use(fileUpload({ limits: {
     
         const mailOptions = {
           from: "simplecheck@dorrola.com",
-          to: "x.zebaa@gmail.com, rodrigogarridov@gmail.com, gcrispi1978@gmail.com",
+          to: "x.zebaa@gmail.com, rodrigogarridov@gmail.com, ariel.maturana@klin.cl",
           // to: "x.zebaa@gmail.com, ",
           attachments: attachments,
           subject: `[REPORTE] - EMPRESA: ${repsonseDB[0].empresa} - nuevo reporte de servicio `,
