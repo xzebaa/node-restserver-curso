@@ -254,7 +254,7 @@ const getOffices = async () => {
 const getCompanys= async () => {
   
   return new Promise( (resolve,reject) => {
-      connection.query(`SELECT ID, NAME FROM COMPANYS`, (err, resp) => {
+      connection.query(`SELECT ID, NAME FROM COMPANYS WHERE ACTIVE = 1`, (err, resp) => {
           if (err) {
               reject(err)
           } else {
