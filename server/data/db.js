@@ -112,7 +112,7 @@ const createService = async (service = {}) => {
               reject(err)
           } else {
               const table = [];
-              console.log(resp)
+            //   console.log(resp)
               // resp.forEach((product) => {
                   
               //     table.push(product)
@@ -146,7 +146,7 @@ const createReport = async (report = {}) => {
               reject(err)
           } else {
               const table = [];
-              console.log(resp)
+            //   console.log(resp)
               resolve(resp)
           }
       })
@@ -166,7 +166,7 @@ const insertImageServices = async (service = {}) => {
         if (err) {
             reject(err)
         } else {
-            console.log(resp)
+            // console.log(resp)
             resolve(resp);
         }
     });
@@ -189,7 +189,7 @@ const insertImageReport = async (report = {}) => {
         if (err) {
             reject(err)
         } else {
-            console.log(resp)
+            // console.log(resp)
             resolve(resp);
         }
     });
@@ -287,11 +287,14 @@ const getOfficesByCompanyId = async ( companyId ) => {
   })
 };
 
+
+
 const getReportMailForId = async ( reportId ) => {
   
     return new Promise( (resolve,reject) => {
         connection.query(`select RPRT.id ,
         USR.name as nombre,
+        USR.last_name as apellido,
         USR.dni as rut,
         COMPNY.name as empresa,
         OFFI.name as oficina,
@@ -323,6 +326,24 @@ const getReportMailForId = async ( reportId ) => {
     })
   };
 
+  const getImagesReportByReportId = async ( reportId ) => {
+  
+    return new Promise( (resolve,reject) => {
+        connection.query(`select id, file_name from IMAGES_REPORTS where report_id=${reportId}`, (err, resp) => {
+            if (err) {
+                reject(err)
+            } else {
+                const table = [];
+                resp.forEach((product) => {
+                    
+                    table.push(product)
+                })
+                resolve(table)
+            }
+        })
+    })
+  };
+
 
 module.exports = { 
   login,
@@ -339,5 +360,6 @@ module.exports = {
   getOffices,
   getOfficesByCompanyId,
   getCompanys,
-  getReportMailForId
+  getReportMailForId,
+  getImagesReportByReportId
 };

@@ -1,171 +1,104 @@
 const express = require('express');
+const app = express();
 const fileUpload = require('express-fileupload');
 const fs = require('fs');
 const path = require('path');
 
 const nodemailer = require('nodemailer');
 
+const cloudinary = require('cloudinary').v2;
 
 const { 
     insertImageReport,
     getReportMailForId
 } = require('../data/db');
 
-const app = express();
+cloudinary.config({ 
+  cloud_name: 'dorrola', 
+  api_key: '777962735876462', 
+  api_secret: '1TZE4RhMDv1u-f4f8MicGhvLUmo' 
+});
 
-app.use(fileUpload({ limits: {
-  fileSize: 1024 * 1024 * 1024 * 1024,
-  abortOnLimit: false
-} }));
+app.use( fileUpload({ 
+    limits: {
+      fileSize: 1024 * 1024 * 1024 * 1024,
+      abortOnLimit: false,
+    },
+    useTempFiles: true,
+    tempFileDir: '/tmp/'
+  }
+));
 
- app.post('/upload/report/:reporteId', async  (req, res) =>{
-    if (!req.files || Object.keys(req.files).length === 0) {
-        return res.status(400).json({
-            ok:false, 
-            error: {
-                message:'No files were uploaded.'
-            }
-        });
-    }
-    let arrayImagenes = [];
-    const { reporteId } = req.params;
-    console.log(reporteId);
+app.post('/upload/report/:reporteId', async  (req, resp) =>{
+  console.log('ingrese')
+ if (!req.files || Object.keys(req.files).length === 0) {
+  return resp.status(400).json({
+      ok:false, 
+      error: {
+          message:'No files were uploaded.'
+      }
+  });
+}
 
-    let archivo = req.files.archivo;
-    console.log(Array.isArray(archivo));
-    console.log(archivo);
+try {
+  const { reporteId } = req.params;
+  console.log(reporteId);
 
-    let filesTemp = [];
+  let archivo = req.files.archivo;
 
-    if(Array.isArray(archivo)){
-        filesTemp = archivo;
-    } else {
-        filesTemp.push(archivo);
-    }
+  let filesTemp = [];
 
-    await filesTemp.forEach( async (item, index)=> {
-        console.log('ingreso foreach imagenes')
-        const nombreCortado = item.name.split('.');
-        let extension = nombreCortado[nombreCortado.length-1]; 
-    
-        // cambiar nombre archivo
-        const nombreArchivo = `${reporteId}-${Date.now() }-${index}.${extension}`
+  if(Array.isArray(archivo)){
+      filesTemp = archivo;
+  } else {
+      filesTemp.push(archivo);
+  }
 
-        console.log(nombreArchivo);
-        await item.mv(`uploads/report/${nombreArchivo}`, async (error) => {
+  for (const file of filesTemp) {
+    const fileResponse =  await uploadToCloudinary(file.tempFilePath);
+    console.log('fileResponse');
+    console.log(fileResponse);
+    borraArchivo(file.tempFilePath);
 
-            if (error){
-                console.log('error')
-                console.log(error)
-                return res.status(500).json({
-                    ok:false, 
-                    error
-                }); 
-            }
-           
-            
-            const reportImagen = {
-                report_id: reporteId,
-                file_name: nombreArchivo
-            };
-            console.log('despuyesd de agregar la imagen');
-            console.log(nombreArchivo)
-            arrayImagenes.push(nombreArchivo);
-            await insertImageReport(reportImagen);
-        }, (error) => {
-            console.log('error catch');
-            console.log(error)
-        });
-    });
-    await envioMail(reporteId, arrayImagenes);
-
-    return res.json({
-        ok: true,
-       message: 'imagen subida'
-    })
+    const reportImagen = {
+        report_id: reporteId,
+        file_name: fileResponse.secure_url
+    };
+    await insertImageReport(reportImagen);
+    // return fileResponse; 
+  };
+  
+  console.log('saliendo')
+  return resp.json({
+    ok: true
   });
 
-  const envioMail = async (idReporte, arrayImagenes) => {
+} catch (error) {
+  return resp.status(400).json({
+    ok:false, 
+    error: {
+        message:'error al subir el archivo'
+    }
+});;
+}
 
-    console.log(' entre aca')
-    console.log(arrayImagenes)
+});
 
-    try {
-        const repsonseDB = await getReportMailForId(idReporte);
-        console.log(repsonseDB[0].nombre);
-    
-        // const transporter = nodemailer.createTransport({
-        //   service: "gmail",
-        //   auth: {
-        //     user: "sealvarezlazo@gmail.com",
-        //     pass: "Xebitay123" // naturally, replace both with your real credentials or an application-specific password
-        //   }
-        // });
-
-        const transporter =  nodemailer.createTransport({
-            host: "mail.dorrola.com",
-            port: 587,
-            auth: {
-              user: "simplecheck@dorrola.com",
-              pass: "Xebitay123"
-            },
-            tls: {
-                rejectUnauthorized: false
-            }
-          });
-
-        let attachments = [];
-
-        arrayImagenes.forEach( (nombreArchivo, index)=> {
-
-            console.log(`agregando imagenes al adjuntador ${nombreArchivo}`)
-            attachments.push({
-                // filename and content type is derived from path
-                path: path.resolve(
-                  __dirname,
-                  `../../uploads/report/${nombreArchivo}`
-                )
-              })
-        });
-
-        console.log('array de imagenes');
-
-        console.log(arrayImagenes);
-    
-        const mailOptions = {
-          from: "simplecheck@dorrola.com",
-          to: "x.zebaa@gmail.com, rodrigogarridov@gmail.com, ariel.maturana@klin.cl",
-          // to: "x.zebaa@gmail.com, ",
-          attachments: attachments,
-          subject: `[REPORTE] - EMPRESA: ${repsonseDB[0].empresa} - nuevo reporte de servicio `,
-          text: "SIMPLECHECK",
-          html: `
-            <p>ID REPORTE = ${repsonseDB[0].id}</p> </br>
-            <p>NOMBRE = ${repsonseDB[0].nombre}</p> </br>
-            <p>RUT = ${repsonseDB[0].rut}</p> </br>
-            <p>EMPRESA = ${repsonseDB[0].empresa}</p> </br>
-            <p>OFICINA = ${repsonseDB[0].oficina}</p> </br>
-            <p>SERVICIO PRESTADO = ${repsonseDB[0].servicio_name}</p> </br>
-            <p>COMENTARIO = ${repsonseDB[0].comentario}</p> </br>
-            <p>MAIL = ${repsonseDB[0].mail}</p> </br>
-            <p>NUMERO TELEFONO = ${repsonseDB[0].numero}</p> </br>
-            `
-        };
-    
-        transporter.sendMail(mailOptions, function(error, info) {
-          if (error) {
-            console.log(error);
-          } else {
-            console.log("Email sent: " + info.response);
-          }
-        });
-    
-        console.log('exito');
-        return true;
-      } catch (error) {
-          console.log(error);
-        return false;
-      }
+const borraArchivo = ( nombreImagen ) => {
+  let pathImage = path.resolve(__dirname, nombreImagen);
+  if (fs.existsSync(pathImage)){
+      fs.unlinkSync(pathImage);
   }
+}
+
+const  uploadToCloudinary = async (image) => {
+return new Promise((resolve, reject) => {
+  cloudinary.uploader.upload(image, (err, url) => {
+    if (err) return reject(err);
+    return resolve(url);
+  })
+});
+}
+ 
 
 module.exports = app;

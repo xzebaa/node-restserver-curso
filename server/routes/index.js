@@ -9,5 +9,6 @@ app.use(require('./health'));
 app.use(require('./upload'));
 app.use(require('./imagenes'));
 app.use(require('./services'));
+app.use(require('./mail'));
 
 module.exports = app;
