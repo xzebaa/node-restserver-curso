@@ -155,11 +155,13 @@ const createReport = async (report = {}) => {
 
 const insertImageServices = async (service = {}) => {
   return new Promise( (resolve,reject) => {
+
+    const { service_id, file_name} = service;
     var post = {
-      file_name: 'asdwrwe.jpeg',
+      file_name: file_name,
       date: new Date(),
       active: 1,
-      report_id: 1
+      service_id: service_id
     };
 
     connection.query('INSERT INTO IMAGES_SERVICES SET ?', post, (err, resp) => {

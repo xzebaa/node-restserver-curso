@@ -8,7 +8,7 @@ const nodemailer = require("nodemailer");
 
 const cloudinary = require("cloudinary").v2;
 
-const { insertImageReport, getReportMailForId } = require("../data/db");
+const { insertImageReport, getReportMailForId, insertImageServices } = require("../data/db");
 
 cloudinary.config({
   cloud_name: "dorrola",
@@ -112,10 +112,10 @@ app.post("/upload/service/:serviceId", async (req, resp) => {
       borraArchivo(file.tempFilePath);
 
       const serviceImagen = {
-        report_id: serviceId,
+        service_id: serviceId,
         file_name: fileResponse.secure_url
       };
-      await insertImageReport(serviceImagen);
+      await insertImageServices(serviceImagen);
       // return fileResponse;
     }
 
@@ -124,6 +124,7 @@ app.post("/upload/service/:serviceId", async (req, resp) => {
       ok: true
     });
   } catch (error) {
+    console.log(error);
     return resp.status(400).json({
       ok: false,
       error: {
