@@ -146,7 +146,7 @@ app.post('/mail/service/send', async  (req, resp) =>{
         from: "simplecheck@dorrola.com",
       //   to: "x.zebaa@gmail.com, rodrigogarridov@gmail.com",
         to: "x.zebaa@gmail.com, ",
-        subject: `[SERVICIO] - EMPRESA: ${repsonseDB[0].empresa} - nuevo reporte de servicio `,
+        subject: `[SERVICIO REGISTRADO] - EMPRESA: ${repsonseDB[0].empresa} - nuevo reporte de servicio `,
         text: "SIMPLECHECK",
         attachments: attachment,
         html: `
