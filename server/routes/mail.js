@@ -52,7 +52,7 @@ const {
         
     
         const mailOptions = {
-          from: "simplecheck@dorrola.com",
+          from: "reporte.simplecheck@dorrola.com",
         //   to: "x.zebaa@gmail.com, rodrigogarridov@gmail.com",
           to: "x.zebaa@gmail.com, ",
           subject: `[REPORTE] - EMPRESA: ${repsonseDB[0].empresa} - nuevo reporte de servicio `,
@@ -143,7 +143,7 @@ app.post('/mail/service/send', async  (req, resp) =>{
       
   
       const mailOptions = {
-        from: "simplecheck@dorrola.com",
+        from: "servicio.simplecheck@dorrola.com",
       //   to: "x.zebaa@gmail.com, rodrigogarridov@gmail.com",
         to: "x.zebaa@gmail.com, ",
         subject: `[SERVICIO REGISTRADO] - EMPRESA: ${repsonseDB[0].empresa} - nuevo reporte de servicio `,
