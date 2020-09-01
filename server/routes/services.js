@@ -21,6 +21,8 @@ const client = new OAuth2Client(process.env.CLIENT_ID_GOOGLE);
 
 app.post('/service',  async  (req, resp) => {
 
+    console.log(req.body);
+    console.log(req.param);
     const {
         activities_services_id = '',
         comentary = '',
