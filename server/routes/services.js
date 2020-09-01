@@ -21,14 +21,26 @@ const client = new OAuth2Client(process.env.CLIENT_ID_GOOGLE);
 
 app.post('/service',  async  (req, resp) => {
 
-    const { body = [] } = req;
+    const {
+        activities_services_id = '',
+        comentary = '',
+        informant_dni = '',
+        sucursal_id = ''
+    } = req.body;
+
+    const service = {
+        activities_services_id,
+        comentary,
+        informant_dni,
+        sucursal_id
+        };
 
     try {
-        const usuarioDB = await createService();
+        const usuarioDB = await createService(service);
 
         return resp.json({
             ok: true,
-            usuario: usuarioDB
+            servicio: usuarioDB
         })
 
 

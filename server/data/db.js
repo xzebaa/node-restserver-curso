@@ -99,27 +99,27 @@ const createService = async (service = {}) => {
   return new Promise( (resolve,reject) => {
     var post = {
       date: new Date(),
-      activities_services_id: 1,
-      comentary: 'elultimooooo',
-      informant_dni: '17420667',
-      office_id: 1,
-      type_service_id: 1
+      activities_services_id: service.activities_services_id,
+      comentary: service.comentary,
+      informant_dni: service.informant_dni,
+      office_id: service.sucursal_id,
+      categorie_service_id: 100 // por default
     };
 
     
-      connection.query('INSERT INTO SERVICES SET ?', post, (err, resp) => {
-          if (err) {
-              reject(err)
-          } else {
-              const table = [];
-            //   console.log(resp)
-              // resp.forEach((product) => {
-                  
-              //     table.push(product)
-              // })
-              resolve(resp)
-          }
-      })
+    connection.query('INSERT INTO SERVICES SET ?', post, (err, resp) => {
+        if (err) {
+            reject(err)
+        } else {
+            // const table = [];
+            console.log(resp)
+            // resp.forEach((product) => {
+                
+            //     table.push(product)
+            // })
+            resolve(resp)
+        }
+    });
   })
 }
 
@@ -200,7 +200,7 @@ const insertImageReport = async (report = {}) => {
 const getActivitiServices = async () => {
   
   return new Promise( (resolve,reject) => {
-      connection.query(`SELECT ID, NAME FROM ACTIVITIES_SERVICES`, (err, resp) => {
+      connection.query(`SELECT id, name FROM ACTIVITIES_SERVICES`, (err, resp) => {
           if (err) {
               reject(err)
           } else {
@@ -218,7 +218,7 @@ const getActivitiServices = async () => {
 const getCategoriesServices = async () => {
   
   return new Promise( (resolve,reject) => {
-      connection.query(`SELECT ID, NAME FROM CATEGORIES_SERVICES`, (err, resp) => {
+      connection.query(`SELECT id, name FROM CATEGORIES_SERVICES`, (err, resp) => {
           if (err) {
               reject(err)
           } else {
@@ -236,7 +236,7 @@ const getCategoriesServices = async () => {
 const getOffices = async () => {
   
   return new Promise( (resolve,reject) => {
-      connection.query(`SELECT ID, NAME FROM OFFICES`, (err, resp) => {
+      connection.query(`SELECT id, name FROM OFFICES`, (err, resp) => {
           if (err) {
               reject(err)
           } else {
@@ -254,7 +254,7 @@ const getOffices = async () => {
 const getCompanys= async () => {
   
   return new Promise( (resolve,reject) => {
-      connection.query(`SELECT ID, NAME FROM COMPANYS WHERE ACTIVE = 1`, (err, resp) => {
+      connection.query(`SELECT id, name FROM COMPANYS WHERE ACTIVE = 1`, (err, resp) => {
           if (err) {
               reject(err)
           } else {
@@ -272,7 +272,7 @@ const getCompanys= async () => {
 const getOfficesByCompanyId = async ( companyId ) => {
   
   return new Promise( (resolve,reject) => {
-      connection.query(`SELECT ID, NAME FROM OFFICES WHERE company_id=${companyId}`, (err, resp) => {
+      connection.query(`SELECT id, name FROM OFFICES WHERE company_id=${companyId}`, (err, resp) => {
           if (err) {
               reject(err)
           } else {
