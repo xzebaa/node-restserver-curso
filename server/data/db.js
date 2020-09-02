@@ -439,7 +439,8 @@ const getServiceMailForId = async serviceId => {
         ON SERV.informant_dni = USR.dni
         INNER JOIN COMPANYS AS COMPNY
         ON OFFI.company_id = COMPNY.id
-        where SERV.informant_dni=${dni}`,
+        where SERV.informant_dni=${dni}
+        ORDER BY SERV.id  DESC LIMIT 8`,
         (err, resp) => {
           if (err) {
             reject(err);

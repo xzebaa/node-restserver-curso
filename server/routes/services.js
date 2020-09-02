@@ -210,9 +210,9 @@ app.post('/service/report', async (req, res) => {
     }
   });
 
-  app.get('/services/service/user/:id', async  (req, resp) =>{
+  app.get('/services/service/user/:dni', async  (req, resp) =>{
 
-    const { dni }= req.body;
+    const { dni }= req.params;
 
     if ( !dni ) {
         return resp.status(400).json({
