@@ -13,7 +13,10 @@ const {
     getOffices,
     getOfficesByCompanyId,
     getCompanys,
-    createReport
+    createReport,
+    getAllServiceForDni,
+    getImagesReportByReportId,
+    getImagesServiceByServiceId
 } = require('../data/db');
 
 const {OAuth2Client} = require('google-auth-library');
@@ -206,5 +209,54 @@ app.post('/service/report', async (req, res) => {
         });
     }
   });
+
+  app.get('/services/service/user/:id', async  (req, resp) =>{
+
+    const { dni }= req.body;
+
+    if ( !dni ) {
+        return resp.status(400).json({
+            ok:false, 
+            error: {
+                message:'Error en request.'
+            }
+        });
+    }
+
+    try {
+        const repsonseDB = await getAllServiceForDni(dni);
+
+        let listService = [];
+        const lista = [];
+
+        for (var i = 0; i < repsonseDB.length; i++) {
+            if(repsonseDB[i].id){
+                let imagesReport = await getImagesServiceByServiceId(repsonseDB[i].id);
+                // obtiene imagenes 
+                let imagenes = [];
+                for (var p = 0; p < imagesReport.length; p++) {
+                    imagenes.push({ url: imagesReport[p].file_name});
+                }
+                listService.push({...repsonseDB[i], imagenes});
+            }
+        }
+  
+        // const imagesReport = await getImagesReportByReportId(idReporte);
+
+        return resp.json({
+            ok: true,
+            services: listService
+          });
+      } catch (error) {
+          console.log(error);
+          return resp.status(400).json({
+            ok:false, 
+            error: {
+                message: error.message
+            }
+        });
+      }
+
+ });
 
 module.exports = app;

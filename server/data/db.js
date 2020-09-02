@@ -322,6 +322,44 @@ const getReportMailForId = async reportId => {
   });
 };
 
+const getAllReportForDni = async dni => {
+  return new Promise((resolve, reject) => {
+    connection.query(
+      `select RPRT.id ,
+        USR.name as nombre,
+        USR.last_name as apellido,
+        USR.dni as rut,
+        COMPNY.name as empresa,
+        OFFI.name as oficina,
+        ACTSERVICES.name as servicio_name,
+        RPRT.comentary as comentario,
+        RPRT.informant_extra_email as mail,
+        RPRT.informant_extra_number1 as numero
+        from REPORTS as RPRT
+        INNER JOIN OFFICES AS OFFI
+        ON RPRT.office_id = OFFI.id
+        INNER JOIN ACTIVITIES_SERVICES AS ACTSERVICES
+        ON RPRT.activities_services_id = ACTSERVICES.id
+        INNER JOIN USERS AS USR
+        ON RPRT.informant_dni = USR.dni
+        INNER JOIN COMPANYS AS COMPNY
+        ON OFFI.company_id = COMPNY.id
+        where RPRT.informant_dni=${reportId}`,
+      (err, resp) => {
+        if (err) {
+          reject(err);
+        } else {
+          const table = [];
+          resp.forEach(product => {
+            table.push(product);
+          });
+          resolve(table);
+        }
+      }
+    );
+  });
+};
+
 const getImagesReportByReportId = async reportId => {
   return new Promise((resolve, reject) => {
     connection.query(
@@ -379,6 +417,44 @@ const getServiceMailForId = async serviceId => {
     });
   };
 
+  const getAllServiceForDni = async dni => {
+    return new Promise((resolve, reject) => {
+      
+      connection.query(
+        `select 
+        SERV.id ,
+        SERV.comentary as comentario,
+        USR.name as nombre,
+        USR.last_name as apellido,
+        USR.dni as rut,
+        COMPNY.name as empresa,
+        OFFI.name as oficina,
+        ACTSERVICES.name as servicio_name
+        from SERVICES as SERV
+        INNER JOIN OFFICES AS OFFI
+        ON SERV.office_id = OFFI.id
+        INNER JOIN ACTIVITIES_SERVICES AS ACTSERVICES
+        ON SERV.activities_services_id = ACTSERVICES.id
+        INNER JOIN USERS AS USR
+        ON SERV.informant_dni = USR.dni
+        INNER JOIN COMPANYS AS COMPNY
+        ON OFFI.company_id = COMPNY.id
+        where SERV.informant_dni=${dni}`,
+        (err, resp) => {
+          if (err) {
+            reject(err);
+          } else {
+            const table = [];
+            resp.forEach(product => {
+              table.push(product);
+            });
+            resolve(table);
+          }
+        }
+      );
+    });
+  };
+
 const getImagesServiceByServiceId = async serviceId => {
   return new Promise((resolve, reject) => {
     connection.query(
@@ -416,5 +492,7 @@ module.exports = {
   getReportMailForId,
   getImagesReportByReportId,
   getImagesServiceByServiceId,
-  getServiceMailForId
+  getServiceMailForId,
+  getAllReportForDni,
+  getAllServiceForDni
 };
