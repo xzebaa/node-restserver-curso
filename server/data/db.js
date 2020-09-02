@@ -475,6 +475,34 @@ const getImagesServiceByServiceId = async serviceId => {
   });
 };
 
+const getClientForDni = async dni => {
+  return new Promise((resolve, reject) => {
+    connection.query(
+      `select 
+      dni as dni, 
+      name as nombre, 
+      last_name as apellido, 
+      direction as direccion, 
+      city as ciudad, 
+      email as email, 
+      mobile_number as telefono
+      from USERS
+      where dni =${dni}`,
+      (err, resp) => {
+        if (err) {
+          reject(err);
+        } else {
+          const table = [];
+          resp.forEach(product => {
+            table.push(product);
+          });
+          resolve(table);
+        }
+      }
+    );
+  });
+};
+
 module.exports = {
   login,
   getServices,
@@ -495,5 +523,6 @@ module.exports = {
   getImagesServiceByServiceId,
   getServiceMailForId,
   getAllReportForDni,
-  getAllServiceForDni
+  getAllServiceForDni,
+  getClientForDni
 };
