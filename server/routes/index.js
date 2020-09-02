@@ -11,5 +11,6 @@ app.use(require('./imagenes'));
 app.use(require('./services'));
 app.use(require('./mail'));
 app.use(require('./news'));
+app.use(require('./report'));
 
 module.exports = app;

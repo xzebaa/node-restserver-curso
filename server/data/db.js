@@ -344,7 +344,8 @@ const getAllReportForDni = async dni => {
         ON RPRT.informant_dni = USR.dni
         INNER JOIN COMPANYS AS COMPNY
         ON OFFI.company_id = COMPNY.id
-        where RPRT.informant_dni=${reportId}`,
+        where RPRT.informant_dni=${dni}
+        ORDER BY RPRT.id  DESC LIMIT 8`,
       (err, resp) => {
         if (err) {
           reject(err);
