@@ -30,14 +30,18 @@ app.post('/service',  async  (req, resp) => {
         activities_services_id = '',
         comentary = '',
         informant_dni = '',
-        sucursal_id = ''
+        sucursal_id = '',
+        lat = '',
+        long = ''
     } = req.body;
 
     const service = {
         activities_services_id,
         comentary,
         informant_dni,
-        sucursal_id
+        sucursal_id,
+        lat,
+        long
         };
 
     try {

@@ -101,7 +101,9 @@ const createService = async (service = {}) => {
       comentary: service.comentary,
       informant_dni: service.informant_dni,
       office_id: service.sucursal_id,
-      categorie_service_id: 100 // por default
+      categorie_service_id: 100, // por default,
+      lat: service.lat,
+      long: service.long
     };
 
     connection.query("INSERT INTO SERVICES SET ?", post, (err, resp) => {
