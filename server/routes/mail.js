@@ -118,8 +118,8 @@ app.post('/mail/service/send', async  (req, resp) =>{
           host: "mail.dorrola.com",
           port: 587,
           auth: {
-            user: "simplecheck@dorrola.com",
-            pass: "Xebitay123"
+            user: "notificaciones@simplecheck.cl",
+            pass: "ft10aj3nig22"
           },
           tls: {
               rejectUnauthorized: false
@@ -143,7 +143,7 @@ app.post('/mail/service/send', async  (req, resp) =>{
       
   
       const mailOptions = {
-        from: "servicio.simplecheck@dorrola.com",
+        from: "notificaciones@simplecheck.cl",
         to: "x.zebaa@gmail.com, ",
         // to: "x.zebaa@gmail.com, ",
         subject: `[SERVICIO REGISTRADO] - EMPRESA: ${repsonseDB[0].empresa} - nuevo reporte de servicio `,
