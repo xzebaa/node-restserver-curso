@@ -19,16 +19,16 @@ app.get('/news/mobile', async (req, res) => {
 
     const news = [
         {
-            title: 'Primera noticia desde el baquend',
-            notice: 'esto es amaziiiing',
+            title: 'CAMBIO DE HORA CHILE',
+            notice: 'lorem ispu lorem ipsu',
             image: '',
-            date: new Date(),
+            date: '13/09/2020',
         },
         {
-            title: 'segundaa noticia desde el baquend',
-            notice: 'esto es amaziiiing wowowowowoowowowowowow',
+            title: 'LANZAMIENTO OFICILA',
+            notice: 'lorem ispu lorem ipsu',
             image: '',
-            date: new Date(),
+            date: '14/09/2020',
         }
     ];
 
