@@ -29,8 +29,8 @@ const {
             host: "mail.dorrola.com",
             port: 587,
             auth: {
-              user: "simplecheck@dorrola.com",
-              pass: "Xebitay123"
+              user: "notificaciones@simplecheck.cl",
+            pass: "ft10aj3nig22"
             },
             tls: {
                 rejectUnauthorized: false
@@ -52,8 +52,8 @@ const {
         
     
         const mailOptions = {
-          from: "reporte.simplecheck@dorrola.com",
-          to: "x.zebaa@gmail.com, rodrigogarridov@gmail.com, gcrispi1978@gmail.com",
+          from: "notificaciones@simplecheck.cl",
+        to: "x.zebaa@gmail.com, rodrigogarridov@gmail.com, ",
           // to: "x.zebaa@gmail.com, ",
           subject: `[REPORTE] - EMPRESA: ${repsonseDB[0].empresa} - nuevo reporte de servicio `,
           text: "SIMPLECHECK",
