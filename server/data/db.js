@@ -527,9 +527,8 @@ const getReportService = async (query) => {
         INNER JOIN COMPANYS AS COMPNY
         ON OFFI.company_id = COMPNY.id
         where 
-        SERV.informant_dni=${query.dni} and 
-        SERV.date BETWEEN '${query.desde} 00:00:00' AND '${query.hasta} 23:59:59' and
         SERV.office_id = ${query.office} and
+        SERV.date BETWEEN '${query.desde} 00:00:00' AND '${query.hasta} 23:59:59' and
         SERV.activities_services_id = ${query.activity}
         ORDER BY SERV.id`,
       (err, resp) => {
