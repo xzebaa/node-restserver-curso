@@ -382,11 +382,10 @@ const getImagesReportByReportId = async reportId => {
   });
 };
 
-
 const getServiceMailForId = async serviceId => {
-    return new Promise((resolve, reject) => {
-      connection.query(
-        `select 
+  return new Promise((resolve, reject) => {
+    connection.query(
+      `select 
         SERV.id ,
         SERV.comentary as comentario,
         USR.name as nombre,
@@ -405,26 +404,25 @@ const getServiceMailForId = async serviceId => {
         INNER JOIN COMPANYS AS COMPNY
         ON OFFI.company_id = COMPNY.id
         where SERV.id=${serviceId}`,
-        (err, resp) => {
-          if (err) {
-            reject(err);
-          } else {
-            const table = [];
-            resp.forEach(product => {
-              table.push(product);
-            });
-            resolve(table);
-          }
+      (err, resp) => {
+        if (err) {
+          reject(err);
+        } else {
+          const table = [];
+          resp.forEach(product => {
+            table.push(product);
+          });
+          resolve(table);
         }
-      );
-    });
-  };
+      }
+    );
+  });
+};
 
-  const getAllServiceForDni = async dni => {
-    return new Promise((resolve, reject) => {
-      
-      connection.query(
-        `select 
+const getAllServiceForDni = async dni => {
+  return new Promise((resolve, reject) => {
+    connection.query(
+      `select 
         SERV.id ,
         SERV.comentary as comentario,
         USR.name as nombre,
@@ -444,20 +442,20 @@ const getServiceMailForId = async serviceId => {
         ON OFFI.company_id = COMPNY.id
         where SERV.informant_dni=${dni}
         ORDER BY SERV.id  DESC LIMIT 8`,
-        (err, resp) => {
-          if (err) {
-            reject(err);
-          } else {
-            const table = [];
-            resp.forEach(product => {
-              table.push(product);
-            });
-            resolve(table);
-          }
+      (err, resp) => {
+        if (err) {
+          reject(err);
+        } else {
+          const table = [];
+          resp.forEach(product => {
+            table.push(product);
+          });
+          resolve(table);
         }
-      );
-    });
-  };
+      }
+    );
+  });
+};
 
 const getImagesServiceByServiceId = async serviceId => {
   return new Promise((resolve, reject) => {
@@ -506,6 +504,49 @@ const getClientForDni = async dni => {
   });
 };
 
+const getReportService = async (query) => {
+  return new Promise((resolve, reject) => {
+    connection.query(
+      `select 
+        SERV.id ,
+        SERV.comentary as comentario,
+        USR.name as nombre,
+        USR.last_name as apellido,
+        USR.dni as rut,
+        COMPNY.name as empresa,
+        OFFI.name as oficina,
+        ACTSERVICES.name as servicio_name,
+        DATE(SERV.date)  fecha
+        from SERVICES as SERV
+        INNER JOIN OFFICES AS OFFI
+        ON SERV.office_id = OFFI.id
+        INNER JOIN ACTIVITIES_SERVICES AS ACTSERVICES
+        ON SERV.activities_services_id = ACTSERVICES.id
+        INNER JOIN USERS AS USR
+        ON SERV.informant_dni = USR.dni
+        INNER JOIN COMPANYS AS COMPNY
+        ON OFFI.company_id = COMPNY.id
+        where 
+        SERV.informant_dni=${query.dni} and 
+        SERV.date BETWEEN '${query.desde} 00:00:00' AND '${query.hasta} 23:59:59' and
+        SERV.office_id = ${query.office} and
+        SERV.activities_services_id = ${query.activity}
+        ORDER BY SERV.id`,
+      (err, resp) => {
+        if (err) {
+          reject(err);
+        } else {
+          const table = [];
+          resp.forEach(product => {
+            table.push(product);
+          });
+          resolve(table);
+        }
+      }
+    );
+  });
+};
+
 module.exports = {
   login,
   getServices,
@@ -527,5 +568,6 @@ module.exports = {
   getServiceMailForId,
   getAllReportForDni,
   getAllServiceForDni,
-  getClientForDni
+  getClientForDni,
+  getReportService
 };
