@@ -68,6 +68,7 @@ app.get('/reports/report/user/:dni', async  (req, resp) =>{
         activity = '',
     } = req.body;
 
+    
     const query = {
         dni,
         desde,
