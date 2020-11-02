@@ -53,8 +53,8 @@ const {
     
         const mailOptions = {
           from: "reportes@simplecheck.cl",
-        to: "x.zebaa@gmail.com, rodrigogarridov@gmail.com, ",
-          // to: "x.zebaa@gmail.com, ",
+        to: "x.zebaa@gmail.com, cconcha@klin.cl, ariel.maturana@klin.cl, rodrigogarridov@gmail.com, ",
+          // to: "x.zebaa@gmail.com, cconcha@klin.cl, ariel.maturana@klin.cl, ",
           subject: `[REPORTE] - EMPRESA: ${repsonseDB[0].empresa} - nuevo reporte de servicio `,
           text: "SIMPLECHECK",
           attachments: attachment,
@@ -144,8 +144,8 @@ app.post('/mail/service/send', async  (req, resp) =>{
   
       const mailOptions = {
         from: "notificaciones@simplecheck.cl",
-        to: "x.zebaa@gmail.com, rodrigogarridov@gmail.com, ",
-        // to: "x.zebaa@gmail.com, ",
+        to: "x.zebaa@gmail.com, cconcha@klin.cl, ariel.maturana@klin.cl, rodrigogarridov@gmail.com, ",
+        // to: "x.zebaa@gmail.com, cconcha@klin.cl, ariel.maturana@klin.cl, ",
         subject: `[SERVICIO REGISTRADO] - EMPRESA: ${repsonseDB[0].empresa} - nuevo reporte de servicio `,
         text: "SIMPLECHECK",
         attachments: attachment,
