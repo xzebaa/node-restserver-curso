@@ -2,6 +2,9 @@ const express = require('express');
 const app = express()
 const nodemailer = require('nodemailer');
 
+const CORREO_ENVIO = "sealvarezlazo@gmail.com, rodrigogarridov@gmail.com, ";
+// const CORREO_ENVIO = "x.zebaa@gmail.com, cconcha@klin.cl, ariel.maturana@klin.cl, rodrigogarridov@gmail.com, ";
+
 const { 
     getReportMailForId,
     getImagesReportByReportId,
@@ -53,7 +56,7 @@ const {
     
         const mailOptions = {
           from: "reportes@simplecheck.cl",
-        to: "x.zebaa@gmail.com, cconcha@klin.cl, ariel.maturana@klin.cl, rodrigogarridov@gmail.com, ",
+        to: CORREO_ENVIO,
           // to: "x.zebaa@gmail.com, cconcha@klin.cl, ariel.maturana@klin.cl, ",
           subject: `[REPORTE] - EMPRESA: ${repsonseDB[0].empresa} - nuevo reporte de servicio `,
           text: "SIMPLECHECK",
@@ -144,7 +147,7 @@ app.post('/mail/service/send', async  (req, resp) =>{
   
       const mailOptions = {
         from: "notificaciones@simplecheck.cl",
-        to: "x.zebaa@gmail.com, cconcha@klin.cl, ariel.maturana@klin.cl, rodrigogarridov@gmail.com, ",
+        to: CORREO_ENVIO,
         // to: "x.zebaa@gmail.com, cconcha@klin.cl, ariel.maturana@klin.cl, ",
         subject: `[SERVICIO REGISTRADO] - EMPRESA: ${repsonseDB[0].empresa} - nuevo reporte de servicio `,
         text: "SIMPLECHECK",
