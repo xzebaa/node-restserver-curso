@@ -2,8 +2,8 @@ const express = require('express');
 const app = express()
 const nodemailer = require('nodemailer');
 
-// const CORREO_ENVIO = "sealvarezlazo@gmail.com, rodrigogarridov@gmail.com, Jcobos@smu.cl, Lcollao@smu.cl, ariel.maturana@klin.cl, cconcha@klin.cl, pgodoy@smu.cl, ";
-const CORREO_ENVIO = "sealvarezlazo@gmail.com, rodrigogarridov@gmail.com, ";
+const CORREO_ENVIO = "sealvarezlazo@gmail.com, rodrigogarridov@gmail.com, Jcobos@smu.cl, Lcollao@smu.cl, ariel.maturana@klin.cl, cconcha@klin.cl, pgodoy@smu.cl, ";
+// const CORREO_ENVIO = "sealvarezlazo@gmail.com, rodrigogarridov@gmail.com, ";
 // const CORREO_ENVIO = "x.zebaa@gmail.com, cconcha@klin.cl, ariel.maturana@klin.cl, rodrigogarridov@gmail.com, ";
 
 const { 
